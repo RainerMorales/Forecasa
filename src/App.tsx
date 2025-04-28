@@ -1,14 +1,11 @@
-import Weather from "./weather"
+import Weather from "./Weather";
 
 function App() {
-
   return (
     <>
-     <Weather>
-
-     </Weather>
+      <Weather></Weather>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
