@@ -2,15 +2,17 @@ import.meta.env.VITE_WEATHER_API_KEY;
 import { WiHumidity } from "react-icons/wi";
 import { FaWind } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
+import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 function Weather() {
   type WeatherData = {
     city: string;
-    humidity: number;
-    windspeed: number;
-    temp: number;
+    humidity: number |string;
+    windspeed: number|string;
+    temp: number|string;
   };
   const [Temp, setTemp] = useState<WeatherData | null>(null);
-  const inputs = useRef(null);
+  const inputs = useRef<HTMLInputElement>(null);
 
   async function api(city: string) {
     try {
@@ -25,7 +27,13 @@ function Weather() {
         windspeed: result.wind.speed,
       });
     } catch (err) {
-      console.error(err + "something went wrong");
+      toast.error( city+ " Not Found!");
+      setTemp({
+        temp: "-",
+        city:"" ,
+        humidity: "-" ,
+        windspeed:"-",
+      });
     }
   }
   useEffect(() => {
@@ -34,6 +42,7 @@ function Weather() {
 
   return (
     <>
+    <Toaster></Toaster>
       <div className="border-2 rounded-2xl border-zinc-700 w-sm h-120 m-auto mt-20 comic-relief-regular">
         <div className="flex flex-col items-center p-6">
           <div className="p-6">
@@ -82,7 +91,10 @@ function Weather() {
             </svg>
             <input ref={inputs} type="search" required placeholder="Search" />
           </label>
-          <button onClick={() => api(inputs.current.value)} className="btn">
+          <button
+            onClick={() => inputs.current?.value && api(inputs.current.value)}
+            className="btn"
+          >
             click
           </button>
         </div>
