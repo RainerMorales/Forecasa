@@ -7,32 +7,32 @@ import toast from "react-hot-toast";
 function Weather() {
   type WeatherData = {
     city: string;
-    humidity: number |string;
-    windspeed: number|string;
-    temp: number|string;
+    humidity: number | string;
+    windspeed: number | string;
+    temp: number | string;
   };
   const [Temp, setTemp] = useState<WeatherData | null>(null);
   const inputs = useRef<HTMLInputElement>(null);
-
   async function api(city: string) {
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}`;
       const key = import.meta.env.VITE_WEATHER_API_KEY;
       const response = await fetch(`${url}&units=metric&appid=${key}`);
       const result = await response.json();
+      console.log(result)
       setTemp({
-        temp: Math.round(result.main.temp),
+        temp: Math.round(result.main.temp) +"°C",
         city: result.name,
         humidity: result.main.humidity,
         windspeed: result.wind.speed,
       });
     } catch (err) {
-      toast.error( city+ " Not Found!");
+      toast.error(city + " Not Found!");
       setTemp({
         temp: "-",
-        city:"" ,
-        humidity: "-" ,
-        windspeed:"-",
+        city: "",
+        humidity: "-",
+        windspeed: "-",
       });
     }
   }
@@ -42,8 +42,8 @@ function Weather() {
 
   return (
     <>
-    <Toaster></Toaster>
-      <div className="border-2 rounded-2xl border-zinc-700 w-sm h-120 m-auto mt-20 comic-relief-regular">
+      <Toaster></Toaster>
+      <div className="bg-gray-950 rounded-lg w-sm mt-10 m-auto comic-relief-regular">
         <div className="flex flex-col items-center p-6">
           <div className="p-6">
             <img className="w-20" src="cloudy.png" alt="" />
@@ -95,8 +95,11 @@ function Weather() {
             onClick={() => inputs.current?.value && api(inputs.current.value)}
             className="btn"
           >
-            click
+            Search
           </button>
+        </div>
+        <div className=" p-20 text-center text-sm opacity-60">
+          Powered by OpenWeather <br /> Developed by Rainer Morales
         </div>
       </div>
     </>
