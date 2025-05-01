@@ -43,7 +43,7 @@ function Weather() {
   return (
     <>
       <Toaster></Toaster>
-      <div className="bg-gray-950 rounded-lg w-sm mt-10 m-auto comic-relief-regular">
+      <div className="rounded-lg w-sm mt-10 m-auto comic-relief-regular">
         <div className="flex flex-col items-center p-6">
           <div className="p-6">
             <img className="w-20" src="cloudy.png" alt="" />
@@ -72,9 +72,9 @@ function Weather() {
           </div>
         </div>
         <div className="flex justify-center p-10">
-          <label className="input ">
+          <label className="input flex items-center gap-2 bg-slate-800 border border-slate-700 rounded px-3 py-2 focus-within:ring-2 focus-within:ring-sky-500">
             <svg
-              className="h-[1em] opacity-50"
+              className="h-[1em] opacity-50 text-slate-400"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
             >
@@ -89,11 +89,17 @@ function Weather() {
                 <path d="m21 21-4.3-4.3"></path>
               </g>
             </svg>
-            <input ref={inputs} type="search" required placeholder="Search" />
+            <input
+              className="bg-transparent text-slate-100 placeholder-slate-400 outline-none w-full"
+              ref={inputs}
+              type="search"
+              required
+              placeholder="Search"
+            />
           </label>
           <button
             onClick={() => inputs.current?.value && api(inputs.current.value)}
-            className="btn"
+            className="btn btn-primary bg-sky-600 hover:bg-sky-500 text-white border-none"
           >
             Search
           </button>
