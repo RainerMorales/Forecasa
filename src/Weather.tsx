@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 function Weather() {
+  const dates = new Date().toLocaleDateString()
   type WeatherData = {
     city: string;
     humidity: number | string;
@@ -36,6 +37,7 @@ function Weather() {
       });
     }
   }
+
   useEffect(() => {
     api("philippines");
   }, []);
@@ -43,11 +45,17 @@ function Weather() {
   return (
     <>
       <Toaster></Toaster>
-      <div
-        className="
- comic-relief-regular"
-      >
+      <div className=" comic-relief-regular text-zinc-600">
         <div className="flex flex-col items-center p-6">
+          <div className="flex justify-between w-full font-bold text-sm opacity-80">
+            <div>
+              GoodMorning
+            </div>
+            <div>
+             {dates}
+            </div>
+          </div>
+          
           <div className="p-6">
             <img className="w-20" src="cloudy.png" alt="" />
           </div>
@@ -60,24 +68,24 @@ function Weather() {
               </div>
             )}
           </div>
-          <div className="text-2xl font-bold p-4">{Temp?.city}</div>
+          <div className="text-2xl p-4">{Temp?.city}</div>
         </div>
-        <div className="flex justify-around text-center">
-          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 text-zinc-800">
+        <div className="flex justify-center text-center gap-8">
+          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
             <WiHumidity size={30} />
             <div>Humidity</div>
             <div>{Temp ? <div>{Temp.humidity}%</div> : <div>-</div>}</div>
           </div>
-          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 text-zinc-800">
+          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
             <FaWind size={30} />
             <div>Wind Speed</div>
             <div>{Temp ? <div>{Temp.windspeed} km/h</div> : <div>-</div>}</div>
           </div>
         </div>
         <div className="flex justify-center p-10">
-          <label className="input flex items-center gap-2 bg-slate-800 border border-slate-700 rounded px-3 py-2 focus-within:ring-2 focus-within:ring-sky-500">
+          <label className="input flex items-center gap-2 bg-white/20 border border-white/20 rounded px-3 py-2 ">
             <svg
-              className="h-[1em] opacity-50 text-slate-400"
+              className="h-[1em] opacity-50 "
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
             >
@@ -93,16 +101,16 @@ function Weather() {
               </g>
             </svg>
             <input
-              className="bg-transparent text-slate-100 placeholder-slate-400 outline-none w-full"
+              className="bg-transparent  placeholder-zinc-600 outline-none w-full"
               ref={inputs}
               type="search"
               required
-              placeholder="Search"
+              placeholder="Country/City"
             />
           </label>
           <button
             onClick={() => inputs.current?.value && api(inputs.current.value)}
-            className="btn btn-primary bg-sky-600 hover:bg-sky-500 text-white border-none"
+            className="btn  bg-zinc-800 hover:bg-zinc-800 text-white border-none shadow-none"
           >
             Search
           </button>
