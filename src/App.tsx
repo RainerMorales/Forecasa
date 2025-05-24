@@ -3,7 +3,9 @@ import Weather from "./Weather";
 function App() {
   return (
     <>
-      <Weather></Weather>
+      <div className="h-screen bg-cover bg-center" style={{ backgroundImage: 'url("background.jpg")' }}>
+        <Weather></Weather>
+      </div>
     </>
   );
 }

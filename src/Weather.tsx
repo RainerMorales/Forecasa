@@ -19,9 +19,9 @@ function Weather() {
       const key = import.meta.env.VITE_WEATHER_API_KEY;
       const response = await fetch(`${url}&units=metric&appid=${key}`);
       const result = await response.json();
-      console.log(result)
+      console.log(result);
       setTemp({
-        temp: Math.round(result.main.temp) +"°C",
+        temp: Math.round(result.main.temp) + "°C",
         city: result.name,
         humidity: result.main.humidity,
         windspeed: result.wind.speed,
@@ -43,7 +43,10 @@ function Weather() {
   return (
     <>
       <Toaster></Toaster>
-      <div className="rounded-lg w-sm mt-10 m-auto comic-relief-regular">
+      <div
+        className="
+ comic-relief-regular"
+      >
         <div className="flex flex-col items-center p-6">
           <div className="p-6">
             <img className="w-20" src="cloudy.png" alt="" />
@@ -60,12 +63,12 @@ function Weather() {
           <div className="text-2xl font-bold p-4">{Temp?.city}</div>
         </div>
         <div className="flex justify-around text-center">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 text-zinc-800">
             <WiHumidity size={30} />
             <div>Humidity</div>
             <div>{Temp ? <div>{Temp.humidity}%</div> : <div>-</div>}</div>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 text-zinc-800">
             <FaWind size={30} />
             <div>Wind Speed</div>
             <div>{Temp ? <div>{Temp.windspeed} km/h</div> : <div>-</div>}</div>
@@ -104,9 +107,9 @@ function Weather() {
             Search
           </button>
         </div>
-        <div className=" p-20 text-center text-sm opacity-60">
-          Powered by OpenWeather <br /> Developed by Rainer Morales
-        </div>
+      </div>
+      <div className="fixed p-8 bottom-0 w-full text-center text-sm opacity-60">
+        Powered by OpenWeather
       </div>
     </>
   );
