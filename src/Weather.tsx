@@ -1,6 +1,6 @@
 import.meta.env.VITE_WEATHER_API_KEY;
-import { WiHumidity } from "react-icons/wi";
-import { FaWind } from "react-icons/fa";
+import { BsSunrise } from "react-icons/bs";
+import { BsSunset } from "react-icons/bs";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
@@ -20,7 +20,7 @@ function Weather() {
       const key = import.meta.env.VITE_WEATHER_API_KEY;
       const response = await fetch(`${url}&units=metric&appid=${key}`);
       const result = await response.json();
-      console.log(result);
+      console.log(result.sys);
       setTemp({
         temp: Math.round(result.main.temp) + "°C",
         city: result.name,
@@ -45,17 +45,13 @@ function Weather() {
   return (
     <>
       <Toaster></Toaster>
-      <div className=" comic-relief-regular text-zinc-600">
+      <div className=" comic-relief-regular absolute inset-0 bg-black/30">
         <div className="flex flex-col items-center p-6">
           <div className="flex justify-between w-full font-bold text-sm opacity-80">
-            <div>
-              GoodMorning
-            </div>
-            <div>
-             {dates}
-            </div>
+            <div>GoodMorning</div>
+            <div>{dates}</div>
           </div>
-          
+
           <div className="p-6">
             <img className="w-20" src="cloudy.png" alt="" />
           </div>
@@ -72,13 +68,13 @@ function Weather() {
         </div>
         <div className="flex justify-center text-center gap-8">
           <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
-            <WiHumidity size={30} />
-            <div>Humidity</div>
+            <BsSunrise size={30} />
+            <div>Sunrise</div>
             <div>{Temp ? <div>{Temp.humidity}%</div> : <div>-</div>}</div>
           </div>
           <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
-            <FaWind size={30} />
-            <div>Wind Speed</div>
+            <BsSunset size={30} />
+            <div>Sunset</div>
             <div>{Temp ? <div>{Temp.windspeed} km/h</div> : <div>-</div>}</div>
           </div>
         </div>
