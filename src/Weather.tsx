@@ -14,6 +14,7 @@ function Weather() {
     sunset: number | string;
   };
   const [Temp, setTemp] = useState<WeatherData | null>(null);
+  const [aqi, setAQI] = useState("-");
   const inputs = useRef<HTMLInputElement>(null);
   async function api(city: string) {
     try {
@@ -27,8 +28,14 @@ function Weather() {
         `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${key}`
       );
       const aqiResult = await aqiRes.json();
-      const aqiData=aqiResult.list[0].main.aqi;
-      
+      const aqiData = aqiResult.list[0].main.aqi;
+      if (aqiData === 1) setAQI("Good");
+      else if (aqiData === 2) setAQI("Fair");
+      else if (aqiData === 3) setAQI("Moderate");
+      else if (aqiData === 4) setAQI("Poor");
+      else if (aqiData === 5) setAQI("Very Poor");
+      else setAQI("Unknown");
+
       const sunrise = new Date(result.sys.sunrise * 1000).toLocaleTimeString(
         undefined,
         {
@@ -92,7 +99,9 @@ function Weather() {
             )}
           </div>
           <div className="text-xl">{Temp?.city}</div>
-          <div className="text-sm text-center bg-white rounded-full text-zinc-600 w-fit p-2 font-bold ">AQI:Good</div>
+          <div className="text-sm text-center bg-white rounded-full text-zinc-600 w-fit p-2 font-bold ">
+            AQI:{aqi}
+          </div>
         </div>
         <div className="flex justify-center text-center gap-8">
           <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
