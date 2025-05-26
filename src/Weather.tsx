@@ -4,19 +4,29 @@ import { BsSunset } from "react-icons/bs";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
+import { TiWeatherPartlySunny } from "react-icons/ti";
+import icon01d from "./assets/01d.png"
+import icon02d from "./assets/02d.png";
+import icon03d from "./assets/03d.png";
+
 function Weather() {
   const dates = new Date().toLocaleDateString();
+  const icons={
+    "01d":icon01d
+  }
   type WeatherData = {
     city: string;
     windspeed: number | string;
     temp: number | string;
     sunrise: number | string;
     sunset: number | string;
+    aqi: number | string;
+    description: number | string;
   };
-  const [Temp, setTemp] = useState<WeatherData | null>(null);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [aqi, setAQI] = useState("-");
   const inputs = useRef<HTMLInputElement>(null);
-  async function api(city: string) {
+  const api = async (city: string) => {
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}`;
       const key = import.meta.env.VITE_WEATHER_API_KEY;
@@ -28,6 +38,7 @@ function Weather() {
         `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${key}`
       );
       const aqiResult = await aqiRes.json();
+      console.log(result);
       const aqiData = aqiResult.list[0].main.aqi;
       if (aqiData === 1) setAQI("Good");
       else if (aqiData === 2) setAQI("Fair");
@@ -52,69 +63,68 @@ function Weather() {
           hour12: true,
         }
       );
-      console.log(sunrise);
-      setTemp({
+      setWeatherData({
         temp: Math.round(result.main.temp) + "°C",
         city: result.name,
         windspeed: result.wind.speed,
         sunrise: sunrise,
         sunset: sunset,
+        aqi: "-",
+        description:result.weather[0].description
       });
     } catch (err) {
       toast.error(city + " Not Found!");
-      setTemp({
+      setWeatherData({
         temp: "-",
         city: "",
         windspeed: "-",
         sunrise: "-",
         sunset: "-",
+        aqi: "-",
+        description:""
       });
     }
-  }
+  };
 
   useEffect(() => {
-    api("philippines");
+    api("Philippines");
   }, []);
 
   return (
     <>
       <Toaster></Toaster>
-      <div className=" font-mono absolute inset-0 bg-black/10">
+      <div className="  absolute inset-0 bg-black/10 text-red-950">
         <div className="flex flex-col items-center p-6 gap-4">
-          <div className="flex justify-between w-full font-bold text-sm opacity-80">
-            <div>GoodMorning</div>
+          <div className="flex justify-between items-center w-full font-bold text-sm opacity-80 ">
+            <div className="text-xl  flex items-center">
+              <TiWeatherPartlySunny />
+              Forcasa
+            </div>
             <div>{dates}</div>
           </div>
-
-          <div className="p-4">
+          <div className="text-xl">{weatherData?.city}</div>
+          <div className=" flex flex-col items-center">
             <img className="w-20" src="cloudy.png" alt="" />
+            <div className="font-bold  text-6xl">{weatherData?.temp}</div>
           </div>
-          <div className="font-bold text-6xl">
-            {Temp ? (
-              <div>{Temp.temp}</div>
-            ) : (
-              <div>
-                <span className="loading loading-spinner loading-xs"></span>
-              </div>
-            )}
-          </div>
-          <div className="text-xl">{Temp?.city}</div>
-          <div className="text-sm text-center bg-white rounded-full text-zinc-600 w-fit p-2 font-bold ">
-            AQI:{aqi}
+
+          <div className="text-sm text-center bg-white/60 rounded-full text-black w-32 p-2 font-bold  ">
+            {weatherData?.description}
           </div>
         </div>
         <div className="flex justify-center text-center gap-8">
-          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
+          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm text-black bg-white/40 ">
             <BsSunrise size={30} />
             <div>Sunrise</div>
-            <div>{Temp?.sunrise}</div>
+            <div>{weatherData?.sunrise}</div>
           </div>
-          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
+          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm text-black bg-white/40 ">
             <BsSunset size={30} />
             <div>Sunset</div>
-            <div>{Temp?.sunset}</div>
+            <div>{weatherData?.sunset}</div>
           </div>
         </div>
+        {/* <div className=" max-w-lg m-auto bg-white/40 ">k</div> */}
         <div className="flex justify-center p-10">
           <label className="input flex items-center gap-2 bg-white/20 border border-white/20 rounded px-3 py-2 ">
             <svg
@@ -141,6 +151,7 @@ function Weather() {
               placeholder="Country/City"
             />
           </label>
+
           <button
             onClick={() => inputs.current?.value && api(inputs.current.value)}
             className="btn  bg-zinc-800 hover:bg-zinc-800 text-white border-none shadow-none"
@@ -150,9 +161,12 @@ function Weather() {
         </div>
       </div>
       <div className="fixed p-8 bottom-0 w-full text-center text-sm opacity-60">
-        Powered by OpenWeather
+        Developed by Rainer Morales
       </div>
     </>
   );
 }
 export default Weather;
+{
+  /* AQI:{aqi} */
+}
