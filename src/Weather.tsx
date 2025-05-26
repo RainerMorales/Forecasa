@@ -8,9 +8,10 @@ function Weather() {
   const dates = new Date().toLocaleDateString()
   type WeatherData = {
     city: string;
-    humidity: number | string;
     windspeed: number | string;
     temp: number | string;
+    sunrise:number | string
+    sunset:number |string
   };
   const [Temp, setTemp] = useState<WeatherData | null>(null);
   const inputs = useRef<HTMLInputElement>(null);
@@ -20,32 +21,44 @@ function Weather() {
       const key = import.meta.env.VITE_WEATHER_API_KEY;
       const response = await fetch(`${url}&units=metric&appid=${key}`);
       const result = await response.json();
-      console.log(result.sys);
+      const sunrise = new Date(result.sys.sunrise*1000).toLocaleTimeString(undefined,{
+        hour:"2-digit",
+        minute:"2-digit",
+        hour12:true
+      })
+      const sunset =new Date(result.sys.sunset*1000).toLocaleTimeString(undefined,{
+        hour:"2-digit",
+        minute:"2-digit",
+        hour12:true
+      })
+      console.log(sunrise)
       setTemp({
         temp: Math.round(result.main.temp) + "°C",
         city: result.name,
-        humidity: result.main.humidity,
         windspeed: result.wind.speed,
+        sunrise:sunrise,
+        sunset:sunset
       });
     } catch (err) {
       toast.error(city + " Not Found!");
       setTemp({
         temp: "-",
         city: "",
-        humidity: "-",
         windspeed: "-",
+        sunrise:"-",
+        sunset:"-"
       });
     }
   }
 
   useEffect(() => {
-    api("philippines");
+    api("philippines")
   }, []);
 
   return (
     <>
       <Toaster></Toaster>
-      <div className=" comic-relief-regular absolute inset-0 bg-black/30">
+      <div className=" comic-relief-regular absolute inset-0 bg-black/10">
         <div className="flex flex-col items-center p-6">
           <div className="flex justify-between w-full font-bold text-sm opacity-80">
             <div>GoodMorning</div>
@@ -70,12 +83,12 @@ function Weather() {
           <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
             <BsSunrise size={30} />
             <div>Sunrise</div>
-            <div>{Temp ? <div>{Temp.humidity}%</div> : <div>-</div>}</div>
+            <div>{Temp?.sunrise}</div>
           </div>
           <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
             <BsSunset size={30} />
             <div>Sunset</div>
-            <div>{Temp ? <div>{Temp.windspeed} km/h</div> : <div>-</div>}</div>
+            <div>{Temp?.sunset}</div>
           </div>
         </div>
         <div className="flex justify-center p-10">
