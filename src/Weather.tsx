@@ -5,13 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 function Weather() {
-  const dates = new Date().toLocaleDateString()
+  const dates = new Date().toLocaleDateString();
   type WeatherData = {
     city: string;
     windspeed: number | string;
     temp: number | string;
-    sunrise:number | string
-    sunset:number |string
+    sunrise: number | string;
+    sunset: number | string;
   };
   const [Temp, setTemp] = useState<WeatherData | null>(null);
   const inputs = useRef<HTMLInputElement>(null);
@@ -21,23 +21,37 @@ function Weather() {
       const key = import.meta.env.VITE_WEATHER_API_KEY;
       const response = await fetch(`${url}&units=metric&appid=${key}`);
       const result = await response.json();
-      const sunrise = new Date(result.sys.sunrise*1000).toLocaleTimeString(undefined,{
-        hour:"2-digit",
-        minute:"2-digit",
-        hour12:true
-      })
-      const sunset =new Date(result.sys.sunset*1000).toLocaleTimeString(undefined,{
-        hour:"2-digit",
-        minute:"2-digit",
-        hour12:true
-      })
-      console.log(sunrise)
+      const lat = result.coord.lat;
+      const lon = result.coord.lon;
+      const aqiRes = await fetch(
+        `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${key}`
+      );
+      const aqiResult = await aqiRes.json();
+      const aqiData=aqiResult.list[0].main.aqi;
+      
+      const sunrise = new Date(result.sys.sunrise * 1000).toLocaleTimeString(
+        undefined,
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }
+      );
+      const sunset = new Date(result.sys.sunset * 1000).toLocaleTimeString(
+        undefined,
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }
+      );
+      console.log(sunrise);
       setTemp({
         temp: Math.round(result.main.temp) + "°C",
         city: result.name,
         windspeed: result.wind.speed,
-        sunrise:sunrise,
-        sunset:sunset
+        sunrise: sunrise,
+        sunset: sunset,
       });
     } catch (err) {
       toast.error(city + " Not Found!");
@@ -45,27 +59,27 @@ function Weather() {
         temp: "-",
         city: "",
         windspeed: "-",
-        sunrise:"-",
-        sunset:"-"
+        sunrise: "-",
+        sunset: "-",
       });
     }
   }
 
   useEffect(() => {
-    api("philippines")
+    api("philippines");
   }, []);
 
   return (
     <>
       <Toaster></Toaster>
-      <div className=" comic-relief-regular absolute inset-0 bg-black/10">
-        <div className="flex flex-col items-center p-6">
+      <div className=" font-mono absolute inset-0 bg-black/10">
+        <div className="flex flex-col items-center p-6 gap-4">
           <div className="flex justify-between w-full font-bold text-sm opacity-80">
             <div>GoodMorning</div>
             <div>{dates}</div>
           </div>
 
-          <div className="p-6">
+          <div className="p-4">
             <img className="w-20" src="cloudy.png" alt="" />
           </div>
           <div className="font-bold text-6xl">
@@ -77,7 +91,8 @@ function Weather() {
               </div>
             )}
           </div>
-          <div className="text-2xl p-4">{Temp?.city}</div>
+          <div className="text-xl">{Temp?.city}</div>
+          <div className="text-sm text-center bg-white rounded-full text-zinc-600 w-fit p-2 font-bold ">AQI:Good</div>
         </div>
         <div className="flex justify-center text-center gap-8">
           <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/20 ">
