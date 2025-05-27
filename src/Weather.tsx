@@ -1,31 +1,32 @@
 import.meta.env.VITE_WEATHER_API_KEY;
 import { BsSunrise } from "react-icons/bs";
 import { BsSunset } from "react-icons/bs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import { TiWeatherPartlySunny } from "react-icons/ti";
-import icon01d from "./assets/01d.png"
-import icon02d from "./assets/02d.png";
-import icon03d from "./assets/03d.png";
+
 
 function Weather() {
   const dates = new Date().toLocaleDateString();
-  const icons={
-    "01d":icon01d
-  }
   type WeatherData = {
     city: string;
     windspeed: number | string;
     temp: number | string;
+    temp_max: number | string;
+    temp_min: number | string;
     sunrise: number | string;
     sunset: number | string;
     aqi: number | string;
     description: number | string;
+    feelsLike: number | string;
+    groundLevel: number | string;
+    pressure: number | string;
+    seaLevel: number | string;
   };
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [aqi, setAQI] = useState("-");
-  const inputs = useRef<HTMLInputElement>(null);
+  // const inputs = useRef<HTMLInputElement>(null);
   const api = async (city: string) => {
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}`;
@@ -65,23 +66,35 @@ function Weather() {
       );
       setWeatherData({
         temp: Math.round(result.main.temp) + "°C",
+        temp_max: Math.round(result.main.temp_max) + "°C",
+        temp_min: Math.round(result.main.temp_min) + "°C",
         city: result.name,
         windspeed: result.wind.speed,
         sunrise: sunrise,
         sunset: sunset,
         aqi: "-",
-        description:result.weather[0].description
+        description: result.weather[0].description,
+        feelsLike: result.main.feels_like + "°C",
+        groundLevel: result.main.grnd_level + "hPa",
+        pressure: result.main.pressure + "hPa",
+        seaLevel: result.main.sea_level + "hPa",
       });
     } catch (err) {
       toast.error(city + " Not Found!");
       setWeatherData({
         temp: "-",
-        city: "",
+        temp_max: "-",
+        temp_min: "-",
+        city: "-",
         windspeed: "-",
         sunrise: "-",
         sunset: "-",
         aqi: "-",
-        description:""
+        description: "",
+        feelsLike: "-",
+        groundLevel: "-",
+        pressure: "-",
+        seaLevel: "-",
       });
     }
   };
@@ -106,60 +119,46 @@ function Weather() {
           <div className=" flex flex-col items-center">
             <img className="w-20" src="cloudy.png" alt="" />
             <div className="font-bold  text-6xl">{weatherData?.temp}</div>
+            <div>{weatherData?.description}</div>
           </div>
 
-          <div className="text-sm text-center bg-white/60 rounded-full text-black w-32 p-2 font-bold  ">
-            {weatherData?.description}
-          </div>
+          <div className="text-sm text-center bg-white/60 rounded-full text-black w-32 p-2 font-bold  ">AQI:{aqi}</div>
         </div>
-        <div className="flex justify-center text-center gap-8">
-          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm text-black bg-white/40 ">
-            <BsSunrise size={30} />
-            <div>Sunrise</div>
-            <div>{weatherData?.sunrise}</div>
+        <div className="max-w-2xl m-auto grid grid-cols-2 gap-2">
+          <div className="rounded-2xl bg-white/60 p-6">
+            <div className="flex flex-col items-center">
+              <BsSunrise size={38} />
+              Sunrise
+              <div>{weatherData?.sunrise}</div>
+            </div>
           </div>
-          <div className="flex flex-col items-center justify-center w-40 h-25 rounded-2xl backdrop-blur-sm text-black bg-white/40 ">
-            <BsSunset size={30} />
-            <div>Sunset</div>
-            <div>{weatherData?.sunset}</div>
+          <div className="rounded-2xl bg-white/60 p-6">
+            <div className="flex flex-col items-center">
+              <BsSunset size={38} />
+              Sunset
+              <div>{weatherData?.sunset}</div>
+            </div>
           </div>
-        </div>
-        {/* <div className=" max-w-lg m-auto bg-white/40 ">k</div> */}
-        <div className="flex justify-center p-10">
-          <label className="input flex items-center gap-2 bg-white/20 border border-white/20 rounded px-3 py-2 ">
-            <svg
-              className="h-[1em] opacity-50 "
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2.5"
-                fill="none"
-                stroke="currentColor"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </g>
-            </svg>
-            <input
-              className="bg-transparent  placeholder-zinc-600 outline-none w-full"
-              ref={inputs}
-              type="search"
-              required
-              placeholder="Country/City"
-            />
-          </label>
-
-          <button
-            onClick={() => inputs.current?.value && api(inputs.current.value)}
-            className="btn  bg-zinc-800 hover:bg-zinc-800 text-white border-none shadow-none"
-          >
-            Search
-          </button>
+          
+          <div className="col-span-2 rounded-2xl bg-white/60 p-6 ">
+            <div>
+              <div className="flex text-sm p-2 justify-between">
+                Feels Like <div>{weatherData?.feelsLike}</div>
+              </div>
+              <div className="flex text-sm p-2 justify-between">
+                Ground Level <div>{weatherData?.groundLevel}</div>
+              </div>
+              <div className="flex text-sm p-2 justify-between">
+                Pressure <div>{weatherData?.pressure}</div>
+              </div>
+              <div className="flex text-sm p-2 justify-between">
+                Sea Level<div>{weatherData?.seaLevel}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      
       <div className="fixed p-8 bottom-0 w-full text-center text-sm opacity-60">
         Developed by Rainer Morales
       </div>
@@ -169,4 +168,40 @@ function Weather() {
 export default Weather;
 {
   /* AQI:{aqi} */
+}
+{
+  /* <div className="flex justify-center p-10">
+  <label className="input flex items-center gap-2 bg-white/20 border border-white/20 rounded px-3 py-2 ">
+    <svg
+      className="h-[1em] opacity-50 "
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+    >
+      <g
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        strokeWidth="2.5"
+        fill="none"
+        stroke="currentColor"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </g>
+    </svg>
+    <input
+      className="bg-transparent  placeholder-zinc-600 outline-none w-full"
+      ref={inputs}
+      type="search"
+      required
+      placeholder="Country/City"
+    />
+  </label>
+
+  <button
+    onClick={() => inputs.current?.value && api(inputs.current.value)}
+    className="btn  bg-zinc-800 hover:bg-zinc-800 text-white border-none shadow-none"
+  >
+    Search
+  </button>
+</div>; */
 }
