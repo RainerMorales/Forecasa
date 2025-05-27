@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import { TiWeatherPartlySunny } from "react-icons/ti";
-
+import { FaSearch } from "react-icons/fa";
 
 function Weather() {
   const dates = new Date().toLocaleDateString();
@@ -75,9 +75,9 @@ function Weather() {
         aqi: "-",
         description: result.weather[0].description,
         feelsLike: result.main.feels_like + "°C",
-        groundLevel: result.main.grnd_level + "hPa",
-        pressure: result.main.pressure + "hPa",
-        seaLevel: result.main.sea_level + "hPa",
+        groundLevel: result.main.grnd_level + " hPa",
+        pressure: result.main.pressure + " hPa",
+        seaLevel: result.main.sea_level + " hPa",
       });
     } catch (err) {
       toast.error(city + " Not Found!");
@@ -113,7 +113,9 @@ function Weather() {
               <TiWeatherPartlySunny />
               Forcasa
             </div>
-            <div>{dates}</div>
+            <div>
+              <FaSearch size={20} />
+            </div>
           </div>
           <div className="text-xl">{weatherData?.city}</div>
           <div className=" flex flex-col items-center">
@@ -122,7 +124,9 @@ function Weather() {
             <div>{weatherData?.description}</div>
           </div>
 
-          <div className="text-sm text-center bg-white/60 rounded-full text-black w-32 p-2 font-bold  ">AQI:{aqi}</div>
+          <div className="text-sm text-center bg-white/60 rounded-full text-black w-32 p-2 font-bold  ">
+            AQI:{aqi}
+          </div>
         </div>
         <div className="max-w-2xl m-auto grid grid-cols-2 gap-2">
           <div className="rounded-2xl bg-white/60 p-6">
@@ -139,7 +143,7 @@ function Weather() {
               <div>{weatherData?.sunset}</div>
             </div>
           </div>
-          
+
           <div className="col-span-2 rounded-2xl bg-white/60 p-6 ">
             <div>
               <div className="flex text-sm p-2 justify-between">
@@ -158,7 +162,7 @@ function Weather() {
           </div>
         </div>
       </div>
-      
+
       <div className="fixed p-8 bottom-0 w-full text-center text-sm opacity-60">
         Developed by Rainer Morales
       </div>
