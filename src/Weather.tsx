@@ -17,6 +17,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import feelslike from "./assets/feelslike.png";
+import groundlevel from "./assets/groundlevel.png";
+import pressure from "./assets/pressure.png";
+import sealevel from "./assets/sealevel.png";
 
 function Weather() {
   // const dates = new Date().toLocaleDateString();
@@ -130,7 +134,7 @@ function Weather() {
   return (
     <>
       <Toaster></Toaster>
-      <div className="  absolute inset-0 bg-black/10 text-red-950">
+      <div className=" bg-black/10 text-red-950">
         <div className="flex flex-col items-center p-6 gap-4">
           <div className="flex justify-between items-center w-full font-bold text-sm opacity-80 ">
             <div className="text-xl  flex items-center">
@@ -175,88 +179,71 @@ function Weather() {
             <div>{weatherData?.description}</div>
           </div>
 
-          <div className="text-sm text-center bg-white/60 rounded-full text-black w-32 p-2 font-bold  ">
+          <div className="text-sm text-center bg-white/80 rounded-full text-black w-32 p-2 font-bold  ">
             AQI:{aqi}
           </div>
         </div>
-        <div className="max-w-2xl m-auto grid grid-cols-2 gap-2">
-          <div className="rounded-2xl bg-white/60 p-6">
+        <div className="max-w-xl m-auto grid grid-cols-2 gap-2">
+          <div className="rounded-2xl bg-red-950 text-white p-6">
             <div className="flex flex-col items-center">
-              <BsSunrise size={38} />
-              Sunrise
-              <div>{weatherData?.sunrise}</div>
+              <BsSunrise size={30} />
+              <div className="text-2xl font-bold">Sunrise</div>
+              <div className="text-sm">{weatherData?.sunrise}</div>
             </div>
           </div>
-          <div className="rounded-2xl bg-white/60 p-6">
+          <div className="rounded-2xl  bg-red-950 text-white p-6">
             <div className="flex flex-col items-center">
-              <BsSunset size={38} />
-              Sunset
-              <div>{weatherData?.sunset}</div>
+              <BsSunset size={30} />
+              <div className="text-2xl font-bold">Sunset</div>
+              <div className="text-sm">{weatherData?.sunset}</div>
             </div>
           </div>
 
-          <div className="col-span-2 rounded-2xl bg-white/60 p-6 ">
+          <div className="col-span-2 rounded-2xl  bg-white/90 p-6 ">
             <div>
-              <div className="flex text-sm p-2 justify-between">
-                Feels Like <div>{weatherData?.feelsLike}</div>
+              <div className="flex text-sm p-2 justify-between rounded-2xl">
+                <div className="flex items-center font-bold space-x-2">
+                  <div>
+                    <img src={feelslike} alt="" className="w-4" />
+                  </div>
+                  <div>Feels Like</div>
+                </div>
+                <div>{weatherData?.feelsLike}</div>
               </div>
-              <div className="flex text-sm p-2 justify-between">
-                Ground Level <div>{weatherData?.groundLevel}</div>
+              <div className="flex text-sm p-2 justify-between rounded-2xl">
+                <div className="flex items-center font-bold space-x-2">
+                  <div>
+                    <img src={groundlevel} alt="" className="w-4" />
+                  </div>
+                  <div>Ground Level</div>
+                </div>
+                <div>{weatherData?.groundLevel}</div>
               </div>
-              <div className="flex text-sm p-2 justify-between">
-                Pressure <div>{weatherData?.pressure}</div>
+              <div className="flex text-sm p-2 justify-between rounded-2xl">
+                <div className="flex items-center font-bold space-x-2">
+                  <div>
+                    <img src={pressure} alt="" className="w-4" />
+                  </div>
+                  <div>Pressure</div>
+                </div>
+                <div>{weatherData?.pressure}</div>
               </div>
-              <div className="flex text-sm p-2 justify-between">
-                Sea Level<div>{weatherData?.seaLevel}</div>
+              <div className="flex text-sm p-2 justify-between rounded-2xl">
+                <div className="flex items-center font-bold space-x-2">
+                  <div>
+                    <img src={sealevel} alt="" className="w-4" />
+                  </div>
+                  <div>Sea Level</div>
+                </div>
+                <div>{weatherData?.seaLevel}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="fixed p-8 bottom-0 w-full text-center text-sm opacity-60">
-        Developed by Rainer Morales
-      </div>
+     
     </>
   );
 }
 export default Weather;
-{
-  /* AQI:{aqi} */
-}
-{
-  /* <div className="flex justify-center p-10">
-  <label className="input flex items-center gap-2 bg-white/20 border border-white/20 rounded px-3 py-2 ">
-    <svg
-      className="h-[1em] opacity-50 "
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-    >
-      <g
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        strokeWidth="2.5"
-        fill="none"
-        stroke="currentColor"
-      >
-        <circle cx="11" cy="11" r="8"></circle>
-        <path d="m21 21-4.3-4.3"></path>
-      </g>
-    </svg>
-    <input
-      className="bg-transparent  placeholder-zinc-600 outline-none w-full"
-      ref={inputs}
-      type="search"
-      required
-      placeholder="Country/City"
-    />
-  </label>
-
-  <button
-    onClick={() => inputs.current?.value && api(inputs.current.value)}
-    className="btn  bg-zinc-800 hover:bg-zinc-800 text-white border-none shadow-none"
-  >
-    Search
-  </button>
-</div>; */
-}
