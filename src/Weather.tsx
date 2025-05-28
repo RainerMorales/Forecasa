@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { FaSearch } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
+import { BlurFade } from "./components/magicui/blur-fade";
 import {
   Dialog,
   DialogContent,
@@ -24,8 +25,9 @@ import sealevel from "./assets/sealevel.png";
 
 function Weather() {
   // const dates = new Date().toLocaleDateString();
+
   type WeatherData = {
-    city: string;
+    city: number|string;
     windspeed: number | string;
     temp: number | string;
     temp_max: number | string;
@@ -44,6 +46,7 @@ function Weather() {
   const [open, setOpen] = useState(false);
   const [loading, setloading] = useState(false);
   const [aqi, setAQI] = useState("-");
+ 
   const searchLoc = () => {
     if (city.trim() === "") {
       toast.error("Type City!");
@@ -55,7 +58,6 @@ function Weather() {
   const api = async (city: string) => {
     const toastId = toast.loading("Please Wait!");
     try {
-      setloading(true);
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}`;
       const key = import.meta.env.VITE_WEATHER_API_KEY;
       const response = await fetch(`${url}&units=metric&appid=${key}`);
@@ -105,7 +107,7 @@ function Weather() {
         pressure: result.main.pressure + " hPa",
         seaLevel: result.main.sea_level + " hPa",
       });
-      toast.success(city, { id: toastId });
+      toast.success(city+" is available", { id: toastId });
       setOpen(false);
     } catch (err) {
       toast.dismiss(toastId);
@@ -132,6 +134,7 @@ function Weather() {
   };
 
   useEffect(() => {
+    setloading(true);
     api("Manila");
   }, []);
   if (loading) {
@@ -145,7 +148,9 @@ function Weather() {
   return (
     <>
       <Toaster></Toaster>
-      <div className=" bg-black/10 text-red-950">
+      <BlurFade
+      direction="up"
+       className=" bg-black/10 text-red-950">
         <div className="flex flex-col items-center p-6 gap-4">
           <div className="flex justify-between items-center w-full font-bold text-sm opacity-80 ">
             <div className="text-xl  flex items-center">
@@ -212,7 +217,7 @@ function Weather() {
             </div>
           </div>
 
-          <div className="col-span-2 p-2 bg-red-950 rounded-2xl  ">
+          <div className="col-span-2 p-2 ">
             <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm text-white  m-2 ">
               <div className="flex items-center font-bold space-x-2 ">
                 <div>
@@ -254,7 +259,7 @@ function Weather() {
         <div className="flex items-center justify-center text-center text-white/50 text-xs h-20 ">
           Developed by Rainer Morales
         </div>
-      </div>
+      </BlurFade>
     </>
   );
 }
