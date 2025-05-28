@@ -42,6 +42,7 @@ function Weather() {
   const [city, setCity] = useState("");
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [open, setOpen] = useState(false);
+  const [loading, setloading] = useState(false);
   const [aqi, setAQI] = useState("-");
   const searchLoc = () => {
     if (city.trim() === "") {
@@ -54,6 +55,7 @@ function Weather() {
   const api = async (city: string) => {
     const toastId = toast.loading("Please Wait!");
     try {
+      setloading(true);
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}`;
       const key = import.meta.env.VITE_WEATHER_API_KEY;
       const response = await fetch(`${url}&units=metric&appid=${key}`);
@@ -103,11 +105,11 @@ function Weather() {
         pressure: result.main.pressure + " hPa",
         seaLevel: result.main.sea_level + " hPa",
       });
-      toast.success(city,{id:toastId})
+      toast.success(city, { id: toastId });
       setOpen(false);
     } catch (err) {
       toast.dismiss(toastId);
-      toast.error(city + " Not Found!",{id:toastId});
+      toast.error(city + " Not Found!", { id: toastId });
       setWeatherData({
         temp: "-",
         temp_max: "-",
@@ -124,12 +126,21 @@ function Weather() {
         seaLevel: "-",
       });
       setOpen(true);
+    } finally {
+      setloading(false);
     }
   };
 
   useEffect(() => {
     api("Manila");
   }, []);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen ">
+        <span className="loading loading-bars bg-black loading-lg"></span>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -149,7 +160,9 @@ function Weather() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px] ">
                 <DialogHeader>
-                  <DialogTitle className="text-center">Check the Weather</DialogTitle>
+                  <DialogTitle className="text-center">
+                    Check the Weather
+                  </DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -184,14 +197,14 @@ function Weather() {
           </div>
         </div>
         <div className="max-w-xl m-auto grid grid-cols-2 gap-2">
-          <div className="rounded-2xl bg-red-950 text-white p-6">
+          <div className="rounded-2xl text-white bg-red-950 p-6">
             <div className="flex flex-col items-center">
               <BsSunrise size={30} />
               <div className="text-2xl font-bold">Sunrise</div>
               <div className="text-sm">{weatherData?.sunrise}</div>
             </div>
           </div>
-          <div className="rounded-2xl  bg-red-950 text-white p-6">
+          <div className="rounded-2xl text-white bg-red-950 p-6">
             <div className="flex flex-col items-center">
               <BsSunset size={30} />
               <div className="text-2xl font-bold">Sunset</div>
@@ -199,50 +212,49 @@ function Weather() {
             </div>
           </div>
 
-          <div className="col-span-2 rounded-2xl  bg-white/90 p-6 ">
-            <div>
-              <div className="flex text-sm p-2 justify-between rounded-2xl">
-                <div className="flex items-center font-bold space-x-2">
-                  <div>
-                    <img src={feelslike} alt="" className="w-4" />
-                  </div>
-                  <div>Feels Like</div>
+          <div className="col-span-2 p-2 bg-red-950 rounded-2xl  ">
+            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm text-white  m-2 ">
+              <div className="flex items-center font-bold space-x-2 ">
+                <div>
+                  <img src={feelslike} alt="" className="w-4 filter invert" />
                 </div>
-                <div>{weatherData?.feelsLike}</div>
+                <div>Feels Like</div>
               </div>
-              <div className="flex text-sm p-2 justify-between rounded-2xl">
-                <div className="flex items-center font-bold space-x-2">
-                  <div>
-                    <img src={groundlevel} alt="" className="w-4" />
-                  </div>
-                  <div>Ground Level</div>
+              <div>{weatherData?.feelsLike}</div>
+            </div>
+            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm text-white  m-2 ">
+              <div className="flex items-center font-bold space-x-2 ">
+                <div>
+                  <img src={groundlevel} alt="" className="w-4 filter invert" />
                 </div>
-                <div>{weatherData?.groundLevel}</div>
+                <div>Ground Level</div>
               </div>
-              <div className="flex text-sm p-2 justify-between rounded-2xl">
-                <div className="flex items-center font-bold space-x-2">
-                  <div>
-                    <img src={pressure} alt="" className="w-4" />
-                  </div>
-                  <div>Pressure</div>
+              <div>{weatherData?.groundLevel}</div>
+            </div>
+            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm text-white  m-2 ">
+              <div className="flex items-center font-bold space-x-2 ">
+                <div>
+                  <img src={pressure} alt="" className="w-4 filter invert" />
                 </div>
-                <div>{weatherData?.pressure}</div>
+                <div>Pressure</div>
               </div>
-              <div className="flex text-sm p-2 justify-between rounded-2xl">
-                <div className="flex items-center font-bold space-x-2">
-                  <div>
-                    <img src={sealevel} alt="" className="w-4" />
-                  </div>
-                  <div>Sea Level</div>
+              <div>{weatherData?.pressure}</div>
+            </div>
+            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm text-white  m-2 ">
+              <div className="flex items-center font-bold space-x-2 ">
+                <div>
+                  <img src={sealevel} alt="" className="w-4 filter invert" />
                 </div>
-                <div>{weatherData?.seaLevel}</div>
+                <div>Sea Level</div>
               </div>
+              <div>{weatherData?.seaLevel}</div>
             </div>
           </div>
         </div>
+        <div className="flex items-center justify-center text-center text-white/50 text-xs h-20 ">
+          Developed by Rainer Morales
+        </div>
       </div>
-
-     
     </>
   );
 }
