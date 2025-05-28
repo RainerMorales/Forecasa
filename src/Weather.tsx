@@ -6,9 +6,20 @@ import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { FaSearch } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function Weather() {
-  const dates = new Date().toLocaleDateString();
+  // const dates = new Date().toLocaleDateString();
   type WeatherData = {
     city: string;
     windspeed: number | string;
@@ -24,10 +35,20 @@ function Weather() {
     pressure: number | string;
     seaLevel: number | string;
   };
+  const [city, setCity] = useState("");
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [open, setOpen] = useState(false);
   const [aqi, setAQI] = useState("-");
-  // const inputs = useRef<HTMLInputElement>(null);
+  const searchLoc = () => {
+    if (city.trim() === "") {
+      toast.error("Type City!");
+    } else {
+      setCity("");
+      api(city);
+    }
+  };
   const api = async (city: string) => {
+    const toastId = toast.loading("Please Wait!");
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}`;
       const key = import.meta.env.VITE_WEATHER_API_KEY;
@@ -39,7 +60,6 @@ function Weather() {
         `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${key}`
       );
       const aqiResult = await aqiRes.json();
-      console.log(result);
       const aqiData = aqiResult.list[0].main.aqi;
       if (aqiData === 1) setAQI("Good");
       else if (aqiData === 2) setAQI("Fair");
@@ -79,8 +99,11 @@ function Weather() {
         pressure: result.main.pressure + " hPa",
         seaLevel: result.main.sea_level + " hPa",
       });
+      toast.success(city,{id:toastId})
+      setOpen(false);
     } catch (err) {
-      toast.error(city + " Not Found!");
+      toast.dismiss(toastId);
+      toast.error(city + " Not Found!",{id:toastId});
       setWeatherData({
         temp: "-",
         temp_max: "-",
@@ -96,11 +119,12 @@ function Weather() {
         pressure: "-",
         seaLevel: "-",
       });
+      setOpen(true);
     }
   };
 
   useEffect(() => {
-    api("Philippines");
+    api("Manila");
   }, []);
 
   return (
@@ -113,9 +137,36 @@ function Weather() {
               <TiWeatherPartlySunny />
               Forcasa
             </div>
-            <div>
-              <FaSearch size={20} />
-            </div>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-black">
+                  <FaSearch />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] ">
+                <DialogHeader>
+                  <DialogTitle>Check Weather by City</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="location" className="text-right">
+                      City Name
+                    </Label>
+                    <Input
+                      placeholder="ex: Manila"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button onClick={searchLoc} type="submit">
+                    Search
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
           <div className="text-xl">{weatherData?.city}</div>
           <div className=" flex flex-col items-center">
