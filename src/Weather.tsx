@@ -27,7 +27,7 @@ function Weather() {
   // const dates = new Date().toLocaleDateString();
 
   type WeatherData = {
-    city: number|string;
+    city: number | string;
     windspeed: number | string;
     temp: number | string;
     temp_max: number | string;
@@ -45,8 +45,9 @@ function Weather() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setloading] = useState(false);
+  const [btnloading, setBtnloading] = useState(false);
   const [aqi, setAQI] = useState("-");
- 
+
   const searchLoc = () => {
     if (city.trim() === "") {
       toast.error("Type City!");
@@ -56,6 +57,7 @@ function Weather() {
     }
   };
   const api = async (city: string) => {
+    setBtnloading(true);
     const toastId = toast.loading("Please Wait!");
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}`;
@@ -107,7 +109,10 @@ function Weather() {
         pressure: result.main.pressure + " hPa",
         seaLevel: result.main.sea_level + " hPa",
       });
-      toast.success(city+" is available", { id: toastId });
+      toast.success(
+        city + " is currently experiencing " + result.weather[0].description,
+        { duration: 5000, id: toastId }
+      );
       setOpen(false);
     } catch (err) {
       toast.dismiss(toastId);
@@ -129,6 +134,7 @@ function Weather() {
       });
       setOpen(true);
     } finally {
+      setBtnloading(false);
       setloading(false);
     }
   };
@@ -148,9 +154,7 @@ function Weather() {
   return (
     <>
       <Toaster></Toaster>
-      <BlurFade
-      direction="up"
-       className=" bg-black/10 text-red-950">
+      <BlurFade direction="up" className=" bg-black/10 text-red-950">
         <div className="flex flex-col items-center p-6 gap-4">
           <div className="flex justify-between items-center w-full font-bold text-sm opacity-80 ">
             <div className="text-xl  flex items-center">
@@ -159,23 +163,23 @@ function Weather() {
             </div>
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-black">
+                <Button className="bg-red-950">
                   <FaSearch />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] ">
+              <DialogContent className="sm:max-w-[425px] text-red-950 top-50">
                 <DialogHeader>
-                  <DialogTitle className="text-center">
+                  <DialogTitle className="text-center text-2xl ">
                     Check the Weather
                   </DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="location" className="justify-center">
-                      Country/City
+                      City/Country
                     </Label>
                     <Input
-                      placeholder="ex: Manila"
+                      placeholder="e.g., Manila"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       className="col-span-3"
@@ -183,9 +187,23 @@ function Weather() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button onClick={searchLoc} type="submit">
-                    Search
-                  </Button>
+                  {!btnloading ? (
+                    <Button
+                      className="bg-red-950"
+                      onClick={searchLoc}
+                      type="submit"
+                    >
+                      Search
+                    </Button>
+                  ) : (
+                    <Button
+                      className="bg-red-950 opacity-40"
+                      onClick={searchLoc}
+                      type="submit"
+                    >
+                      Search
+                    </Button>
+                  )}
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -197,20 +215,20 @@ function Weather() {
             <div>{weatherData?.description}</div>
           </div>
 
-          <div className="text-sm text-center bg-white/80 rounded-full text-black w-32 p-2 font-bold  ">
+          <div className="text-sm text-center bg-white/80 rounded-full  w-32 p-2 font-bold ">
             AQI:{aqi}
           </div>
         </div>
-        <div className="max-w-xl m-auto grid grid-cols-2 gap-2">
-          <div className="rounded-2xl text-white bg-red-950 p-6">
-            <div className="flex flex-col items-center">
+        <div className="lg:max-w-2xl md:max-w-2xl max-w-md m-auto p-2 grid grid-cols-2 gap-2 bg-white/80 rounded-2xl ">
+          <div className="">
+            <div className="flex flex-col items-center p-4 bg-red-950 text-white rounded-xl">
               <BsSunrise size={30} />
               <div className="text-2xl font-bold">Sunrise</div>
               <div className="text-sm">{weatherData?.sunrise}</div>
             </div>
           </div>
-          <div className="rounded-2xl text-white bg-red-950 p-6">
-            <div className="flex flex-col items-center">
+          <div className="">
+            <div className="flex flex-col items-center p-4 bg-red-950 text-white rounded-xl">
               <BsSunset size={30} />
               <div className="text-2xl font-bold">Sunset</div>
               <div className="text-sm">{weatherData?.sunset}</div>
@@ -218,37 +236,37 @@ function Weather() {
           </div>
 
           <div className="col-span-2 p-2 ">
-            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm text-white  m-2 ">
+            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm  m-2 ">
               <div className="flex items-center font-bold space-x-2 ">
                 <div>
-                  <img src={feelslike} alt="" className="w-4 filter invert" />
+                  <img src={feelslike} alt="" className="w-4" />
                 </div>
                 <div>Feels Like</div>
               </div>
               <div>{weatherData?.feelsLike}</div>
             </div>
-            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm text-white  m-2 ">
+            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm  m-2 ">
               <div className="flex items-center font-bold space-x-2 ">
                 <div>
-                  <img src={groundlevel} alt="" className="w-4 filter invert" />
+                  <img src={groundlevel} alt="" className="w-4" />
                 </div>
                 <div>Ground Level</div>
               </div>
               <div>{weatherData?.groundLevel}</div>
             </div>
-            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm text-white  m-2 ">
+            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm  m-2 ">
               <div className="flex items-center font-bold space-x-2 ">
                 <div>
-                  <img src={pressure} alt="" className="w-4 filter invert" />
+                  <img src={pressure} alt="" className="w-4" />
                 </div>
                 <div>Pressure</div>
               </div>
               <div>{weatherData?.pressure}</div>
             </div>
-            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm text-white  m-2 ">
+            <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm  m-2 ">
               <div className="flex items-center font-bold space-x-2 ">
                 <div>
-                  <img src={sealevel} alt="" className="w-4 filter invert" />
+                  <img src={sealevel} alt="" className="w-4" />
                 </div>
                 <div>Sea Level</div>
               </div>
@@ -257,7 +275,7 @@ function Weather() {
           </div>
         </div>
         <div className="flex items-center justify-center text-center text-white/50 text-xs h-20 ">
-          Developed by Rainer Morales
+          Developed by Rainer Morales | v1.0
         </div>
       </BlurFade>
     </>
