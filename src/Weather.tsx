@@ -58,7 +58,7 @@ function Weather() {
   };
   const api = async (city: string) => {
     setBtnloading(true);
-    const toastId = toast.loading("Please Wait!");
+    const toastId = toast.loading("Please Wait!",{position:'top-left'});
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}`;
       const key = import.meta.env.VITE_WEATHER_API_KEY;
@@ -109,9 +109,9 @@ function Weather() {
         pressure: result.main.pressure + " hPa",
         seaLevel: result.main.sea_level + " hPa",
       });
-      toast.success(
+      toast(
         city + " is currently experiencing " + result.weather[0].description,
-        { duration: 5000, id: toastId }
+        {position:'top-left', duration: 5000, id: toastId,style:{textAlign:'center'} }
       );
       setOpen(false);
     } catch (err) {
@@ -219,8 +219,8 @@ function Weather() {
             AQI:{aqi}
           </div>
         </div>
-        <div className="lg:max-w-2xl md:max-w-2xl max-w-md m-auto p-2 grid grid-cols-2 gap-2 bg-white/80 rounded-2xl ">
-          <div className="">
+        <div className="lg:max-w-2xl md:max-w-2xl max-w-md m-auto p-2 grid grid-cols-2 gap-2   rounded-2xl ">
+          <div className="">  
             <div className="flex flex-col items-center p-4 bg-red-950 text-white rounded-xl">
               <BsSunrise size={30} />
               <div className="text-2xl font-bold">Sunrise</div>
@@ -235,7 +235,7 @@ function Weather() {
             </div>
           </div>
 
-          <div className="col-span-2 p-2 ">
+          <div className="col-span-2 p-2 bg-white/80 rounded-xl">
             <div className="flex text-sm p-2 justify-between items-center h-12 rounded-sm  m-2 ">
               <div className="flex items-center font-bold space-x-2 ">
                 <div>
